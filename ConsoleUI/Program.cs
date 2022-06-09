@@ -14,7 +14,7 @@ namespace ConsoleUI
             BuildConfig(builder);
         }
 
-        static void BuildConfig(IConfiguration builder)
+        static void BuildConfig(IConfigurationBuilder builder)
         {
             builder.SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
