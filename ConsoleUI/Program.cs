@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
@@ -29,7 +30,7 @@ namespace ConsoleUI
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
-
+                    
                 })
                 .UseSerilog()
                 .Build();
@@ -42,25 +43,29 @@ namespace ConsoleUI
                 .AddEnvironmentVariables();
         }
 
-        //public class GreetingService
-        //{
-        //    private readonly ILogger<GreetingService> _log;
-        //    private readonly IConfiguration _config;
+        public class GreetingService
+        {
+            private readonly ILogger<GreetingService> _log;
+            private readonly IConfiguration _config;
 
-        //    public GreetingService(ILogger<GreetingService> log, IConfiguration config)
-        //    {
-        //        _log = log;
-        //        _config = config;
-        //    }
+            public GreetingService(ILogger<GreetingService> log, IConfiguration config)
+            {
+                _log = log;
+                _config = config;
+            }
 
-        //    public void Run()
-        //    {
-        //        for (int i = 0; i < 10; i++)
-        //        {
-        //            // this is #_
-        //        }
-        //    }
-        //}
+            public void Run()
+            {
+                for (int i = 0; i < _config.GetValue<int>("LoopTimes"); i++)
+                {
+                    // use composite formatting instead of string interpolation
+                    // because in logging if you have a structure logger
+                    // then Serilog will not only log the text, but log the value separately
+                    // so you can query logs based on their numbers and you don't have to parse strings
+                    _log.LogInformation("Run number {runNumber}", i);
+                }
+            }
+        }
 
     }
 }
