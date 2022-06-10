@@ -28,11 +28,20 @@ namespace ConsoleUI
             //Host Setup
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
-                {
-                    services.AddTransient<GreetingService>();
+                {   
+                    //when we ask for the GreetingService class we will ask for IGreetingService.
+                    //when we get ready to test, it allows us to take away dependencies or change/replace
+                    //dependencies that won't make changes to production values.
+                    //Even if you only have one implementation of your interface, you
+                    //will be able to add a second implementation for unit testing
+                    services.AddTransient<IGreetingService, GreetingService>();
                 })
                 .UseSerilog()
                 .Build();
+
+            var svc = ActivatorUtilities.CreateInstance<IGreetingService>(host.Services);
+            svc.Run();
+
         }
         static void BuildConfig(IConfigurationBuilder builder)
         {
